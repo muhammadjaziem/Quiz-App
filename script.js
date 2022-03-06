@@ -1,8 +1,15 @@
 
 let availableQuestions = [];
 let questionCounter = 0;
-let currentQuestion = {};
+let currentQuestion;
+let displayQuizQuestions;
+let answerQuizOne;
+let answerQuizTwo;
+let answerQuizThree;
+let answerQuizFour;
+let answerCorrect;
 let differentTypeQuestion = {};
+let questionIndex;
 
 fetch(
     'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple'
@@ -40,51 +47,26 @@ fetch(
 
     startGame = () => {
         questionCounter = 0;
-        availableQuestions = [...questions];
+        availableQuestions = [...questions]; //load all the questions
         getNewQuestion();
     };
 
     getNewQuestion = () => {
-        const questionIndex = Math.floor(Math.random() * availableQuestions.length);
-        currentQuestion = availableQuestions[questionIndex];
-        differentTypeQuestion.add  
-        hello = currentQuestion.questionDisplay;
-        console.log(hello);
-
-const quizQuestions = [
-    {
-        questionDisplay : JSON.stringify(hello),
-        a: "Sofia",
-        b: "Kuala Lumpur",
-        c: "London",
-        d: "Budapest",
-        correct: "a",
-    },
-    {
-        questionDisplay : JSON.stringify(hello),
-        a: "Florin Pop",
-        b: "Azizul Hasni Awang",
-        c: "Ivan Saldano",
-        d: "Mihai Andrei",
-        correct: "b",
-    },
-    {
-       
-        a: "Hypertext Markup Language",
-        b: "Cascading Style Sheet",
-        c: "Jason Object Notation",
-        d: "Helicopters Terminals Motorboats Lamborginis",
-        correct: "a",
-    },
-    {
+        let questionIndex = Math.floor(Math.random() * availableQuestions.length);
         
-        a: "1996",
-        b: "1995",
-        c: "1994",
-        d: "none of the above",
-        correct: "b",
-    },
-];
+         console.log(questionIndex);
+        currentQuestion = availableQuestions[questionIndex];
+       // differentTypeQuestion.add 
+        displayQuizQuestions = currentQuestion.questionDisplay;
+        answerQuizOne = currentQuestion.choice1;
+        answerQuizTwo = currentQuestion.choice2;
+        answerQuizThree = currentQuestion.choice3;
+        answerQuizFour = currentQuestion.choice4;
+        answerCorrect = JSON.stringify(currentQuestion.answer);
+     
+        
+    };
+
 
 const quizDisplay = document.getElementById("quizDisplay");
 const answerEls = document.querySelectorAll(".answer");
@@ -100,17 +82,33 @@ let score = 0;
 
 loadQuiz();
 
+
 function loadQuiz() {
     deselectAnswers();
+   // console.log(hello);
+    //const currentquizQuestions = quizQuestions; //load the questions one by one to the respective variables.
+    //currentquizQuestions[questionDisplay] = hello
+    //to display the question in the mainpage
+    if(displayQuizQuestions)
+    {
+        questionDisplay.innerText =  displayQuizQuestions;
+        first_answer.innerText = answerQuizOne;
+        second_answer.innerText = answerQuizTwo;
+        third_answer.innerText = answerQuizThree;
+        fourth_answer.innerText = answerQuizFour;
+    }
+    else
+    {
+         
+    
 
-    const currentquizQuestions = quizQuestions[currentQuiz];
-
-    //variables for manipulating the HTML elements.
-    questionDisplay.innerText = currentquizQuestions.questionDisplay;
-    first_answer.innerText = currentquizQuestions.a;
-    second_answer.innerText = currentquizQuestions.b;
-    third_answer.innerText = currentquizQuestions.c;
-    fourth_answer.innerText = currentquizQuestions.d;
+        questionDisplay.innerText =  "Who is the President of America?";
+        first_answer.innerText = "Barrack Obama";
+        second_answer.innerText = "George W Bush";
+        third_answer.innerText = "Jason Kenny";
+        fourth_answer.innerText = "Leonadro Spinazoola";
+    }
+   
 }
 
 //displaying all the selected answers
@@ -138,24 +136,28 @@ submitAnswer.addEventListener("click", () => {
 
     //check the correct answer
     const answer = getSelected();
-    console.log(answer);
-
+    
+    //console.log(answerCorrect);
+    //console.log(answer);
+    //check the correct answer
     if (answer) {
-        if (answer === quizQuestions[currentQuiz].correct) {
+        if (answer ===  answerCorrect) {
             score++;
+            
         }
         
         //the currentQuiz will be moved to the next question or if it is finished. The score will be displayed
         currentQuiz++;
-        if (currentQuiz < quizQuestions.length) {
+        if (currentQuiz < availableQuestions.length) {
+            startGame();
             loadQuiz();
         } else {
             quizDisplay.innerHTML = `
-                <h2>You answered correctly at ${score}/${quizQuestions.length} questions.</h2>
+                <h2>You answered correctly at ${score}/${availableQuestions.length} questions.</h2>
                 
                 <button onclick="location.reload()">Reload</button>
             `;
         }
     }
 });
-};
+
